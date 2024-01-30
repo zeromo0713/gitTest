@@ -177,7 +177,7 @@ print(total[1])
 
 # 파일에 쓰기
 if total:
-    with open('랭킹상위60리스트.csv', 'w', encoding='utf-8-sig', newline='') as f:
+    with open('책리스트.csv', 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f, delimiter=',')
         for row in total:
             writer.writerow(row)

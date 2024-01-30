@@ -45,8 +45,8 @@ driver.find_element(By.XPATH,'//*[@id="account"]/div/a').click()
 # print(text)  # 출력: 안녕하세요, Pyperclip
 
 #네이버 자동 로그인
-my_id = "각자 아이디로"
-my_pwd = "각자 비밀번호!"
+my_id = "dudah789"
+my_pwd = "dladudah123!"
 pyperclip.copy(my_id)
 driver.find_element(By.ID,'id').send_keys(Keys.CONTROL,'v')
 pyperclip.copy(my_pwd)
@@ -69,7 +69,7 @@ time.sleep(1)
 
 
 # 엑셀 파일 경로
-excel_file_path =  r'D:\zeromo\workspace\pythonws\랭킹상위60리스트.csv'
+excel_file_path =  r'D:\zeromo\workspace\pythonws\책리스트.csv'
 # 파일 업로드
 file_input = driver.find_element(By.ID, 'ATTACH_LOCAL_FILE_ELEMENT_ID')
 file_input.send_keys(os.path.abspath(excel_file_path))
