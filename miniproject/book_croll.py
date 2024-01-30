@@ -24,6 +24,7 @@ options.add_experimental_option("excludeSwitches",["enable-logging"])
 #옵션이 들어간 크롬을 driver라는 변수에 담아놓음
 driver = webdriver.Chrome(options=options)
 
+#네이버 쇼핑 홈을 먼저 담아온다
 driver.get("https://search.shopping.naver.com/book/home")
 driver.implicitly_wait(10)
 
@@ -48,33 +49,26 @@ while True :
         break
     #스크롤 내린 후 페이지 높이를 현재 페이지 높이 변수에 저장
     last_height = new_height
-
 time.sleep(5)
 
 print("======",last_height)
 print("&*&*&*&*&*",new_height)
-# driver.find_element(By.XPATH,'//*[@id="lnb"]/div/div/ul/li[12]/a').click()
-
-# elem = driver.find_element(By.CLASS_NAME,'category_list_category__DqGyx')
-# elem.find_element(By.CSS_SELECTOR,'li:nth-child(1)').click()
-# driver.find_element(By.CLASS_NAME,'category_list_category__DqGyx').find_element(By.CSS_SELECTOR,'li:nth-child(2)').click()
-# time.sleep(5)
 
 
-
-# 2번째 페이지로 이동
+# 2번째 페이지(시/에세이 페이지)로 이동
 driver.find_element(By.CLASS_NAME, 'category_list_category__DqGyx').find_element(By.CSS_SELECTOR, 'li:nth-child(2)').click()
-print("====여기는 오나===")
 # 페이지 로딩을 기다림
 time.sleep(3)  # 추가적인 로딩 시간이 필요한 경우, 더 긴 대기 시간으로 수정
-#driver.implicitly_wait(10)
-driver.switch_to.window(driver.window_handles[-1])  #새로 연 탭으로 이동
-time.sleep(3)
-print("====여기도 오나===")
-print(driver.current_url)
 
+#탭 이동을 시켜주지 않으면 driver가 새로 열린 탭의 url을 받아오지 못한다.
+driver.switch_to.window(driver.window_handles[-1])  #새로 연 탭으로 이동 
+time.sleep(3)
+#바뀐 후 url의 주소
+print(driver.current_url) 
+
+#스크롤이 끝까지 내리기 위해 일단 현재 보여지는 높이를 구한다.
 last_height = driver.execute_script("return document.documentElement.scrollHeight")
-print(last_height)
+
 while True :
     #스크롤 끝까지 내리기
     driver.execute_script("window.scrollTo(0, document.documentElement.scrollHeight);")
@@ -91,15 +85,10 @@ while True :
     #스크롤 내린 후 페이지 높이를 현재 페이지 높이 변수에 저장
     last_height = new_height
 
-print(" 다 내려감 ")
-print("======2번째 페이지 반복 후=====",last_height)
-print("&*&*&*&*&*",new_height)
 
-# elems = driver.find_elements(By.CLASS_NAME,'bookListItem_item_book__1yCey .bookListItem_text__bglOw')
-# for elem in elems :
-#     print(elem.text)
 
-#elems = driver.find_elements(By.CLASS_NAME,'bookListItem_info_top__VgpiO linkAnchor .bookListItem_text__bglOw')
+
+#시/에세이 페이지에서 책의 제목과 가격, 날짜 ,순위를 가져온다
 titles = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[1]/span')
 prices = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/div/div[1]/span')
 #dates = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[3]/div[2]/div[2]') #==> 이거로 하니 중간에 div 하나가 추가되는 부분이 있어서 40개를 못가져옴
@@ -107,17 +96,10 @@ grades = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[
 dates = driver.find_elements(By.CLASS_NAME,'bookListItem_detail__RBQ6x .bookListItem_detail_date___byvG')
 
 
+#모든 정보를 담기 위한 total을 하나 만들어주고
 total = []
-# for title, price, grade, date_element in zip(titles, prices, grades, dates):
-#     list_obj = []
-#     list_obj.append(title.text)
-#     list_obj.append(price.text)
-#     list_obj.append(grade.text)
-#     list_obj.append(date_element.text)
-#     print(list_obj,"===================")
-#     total.append(list_obj)
 
-
+#리스트 하나에 제목, 가격, 순위, 날짜를 하나씩 빈 배열에 입력 후, total에 계속해서 넣어주는 작업을 한다
 for index,(title, price, grade, date_element) in enumerate(zip(titles, prices, grades, dates)):
     list_obj = []
     list_obj.append(title.text)
@@ -127,12 +109,9 @@ for index,(title, price, grade, date_element) in enumerate(zip(titles, prices, g
     print(list_obj,"===================")
     total.append(list_obj)
     if index >= len(titles) - 1 :
-        driver.find_element(By.XPATH,'//*[@id="container"]/div[2]/div[1]/div/div[3]/a[2]').click()
+        driver.find_element(By.XPATH,'//*[@id="container"]/div[2]/div[1]/div/div[3]/a[2]').click()   #모든 정보를 가져오면 2페이지로 넘어갈 수 있도록 일단 2페이지를 지정
 
-print("===============1페이지 제발 으악==================")
-print(list_obj)
-print("===============1페이지 제바아아아아아알 으악==================")
-print(total)
+#개수가 모두 맞게 가져오는지 확인
 print(len(titles))
 print(len(prices))
 print(len(dates))
@@ -160,11 +139,15 @@ while True :
         break
     #스크롤 내린 후 페이지 높이를 현재 페이지 높이 변수에 저장
     last_height = new_height
+
+#새롭게 2페이지에서 가져온 제목, 가격, 순위, 날짜를 얻어온 후
 titles = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[1]/span')
 prices = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/div/div[1]/span')
 #dates = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[3]/div[2]/div[2]') #==> 이거로 하니 중간에 div 하나가 추가되는 부분이 있어서 40개를 못가져옴
 grades = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[2]')
 dates = driver.find_elements(By.CLASS_NAME,'bookListItem_detail__RBQ6x .bookListItem_detail_date___byvG')
+
+#1페이지와 같은 방법으로 작업을 해주고, 모든 데이터를 가지고 있는 total에 넣어준다
 for index,(title, price, grade, date_element) in enumerate(zip(titles, prices, grades, dates)):
     list_obj = []
     list_obj.append(title.text)
@@ -173,40 +156,17 @@ for index,(title, price, grade, date_element) in enumerate(zip(titles, prices, g
     list_obj.append(date_element.text)
     print(list_obj,"===================")
     total.append(list_obj)
-    if len(total) >= 60 :
+    if len(total) >= 60 :   #우리가 가져오고 싶은 data는 60개였으므로 60개가 다 차면 반복을 그만한다.
         break
     # if index >= 20 :
     #     break
 
-print("===============2페이지 제발 으악==================")
-print(list_obj)
-print("===============2페이지 제바아아아아아알 으악==================")
-print(total)
-
-
-# for title in titles :
-#     print(title.text)
-# print("&*&*&*&*&*&*&*&*&*&**&")
-# for price in prices :
-#     print(price.text)
-# print("&*&*&*&*&*&*&*&*&*&**&")
-# for date in dates :
-#     print(date.text)
-# print("&*&*&*&*&*&*&*&*&*&**&")
-# for grade in grades :
-#     print(grade.text)
-# list_item = []
-# for elem in elems :
-#     print(elem.text)
-#     list_item.append(elem.text)
-# print(type(list_item))
-# print(list_item)
-# print("========================================")
 print(len(titles))
 print(len(prices))
 print(len(dates))
 print(len(grades))
 print(len(total))
+print(type(total))
 
 print(total[0])
 print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%&%&%&%&%&%&%&")
@@ -223,13 +183,6 @@ if total:
             writer.writerow(row)
 else:
     print("데이터가 없습니다.")
-# f = open('랭킹상위60리스트.csv','w',encoding='utf-8-sig')
-# writer = csv.writer(f,delimiter=',')
-
-# for i in total.__len__ :
-#     writer.writerow(total[i])
-
-
 
 
 input()
