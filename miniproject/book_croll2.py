@@ -124,6 +124,8 @@ print(driver.current_url)
 if total:
     with open('책리스트.csv', 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f, delimiter=',')
+        colList = '제목, 가격, 연도, 등수'.split(', ')
+        writer.writerow(colList)
         for row in total:
             writer.writerow(row)
 else:
