@@ -4,13 +4,22 @@ from selenium.webdriver.common.by import By #element(요소)들을 찾기 위해
 from selenium.webdriver.common.keys import Keys # 키보드 입력을 위해서
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-# from selenium.webdriver.common.action_chains import ActionChains  #일반적인 상황에서 클릭이나 이러한 동작들이 작동을 안할 때 더 면밀하게 찾아주기 위해서
-# from selenium.webdriver.support.ui import Select # Select Box를 컨트롤 하기 위해 ==> 클릭으로 컨트롤이 되지 않을 때
-# from selenium.webdriver.support.select import Select
 import os  #운영체제 일단 임포트
 import csv #엑셀 파일(csv파일) 을 열고 데이터를 저장하기 위해서
 import time
 import re #편하게 쓰기 위한 formatting 방식
+import pandas as pd
+import matplotlib.pyplot as plt
+from io import BytesIO
+import openpyxl
+import pyperclip
+# from selenium.webdriver.common.action_chains import ActionChains  #일반적인 상황에서 클릭이나 이러한 동작들이 작동을 안할 때 더 면밀하게 찾아주기 위해서
+# from selenium.webdriver.support.ui import Select # Select Box를 컨트롤 하기 위해 ==> 클릭으로 컨트롤이 되지 않을 때
+# from selenium.webdriver.support.select import Select
+
+
+
+
 
 options  = Options()
 
@@ -33,7 +42,7 @@ print("===반복 전===",last_height)
 
 
 #원하는 개수만큼 데이터 추출
-read_num = 120
+read_num = 500
 #스크롤의 전체 높이가 내린 후의 높이와 같을 때 까지 계속 내리기
 while True :
     #스크롤 끝까지 내리기
@@ -55,7 +64,7 @@ time.sleep(5)
 
 
 # 2번째 페이지(시/에세이 페이지)로 이동
-driver.find_element(By.CLASS_NAME, 'category_list_category__DqGyx').find_element(By.CSS_SELECTOR, 'li:nth-child(3)').click()
+driver.find_element(By.CLASS_NAME, 'category_list_category__DqGyx').find_element(By.CSS_SELECTOR, 'li:nth-child(2)').click()
 print("====여기는 오나===")
 # 페이지 로딩을 기다림
 time.sleep(3)  # 추가적인 로딩 시간이 필요한 경우, 더 긴 대기 시간으로 수정
@@ -124,14 +133,126 @@ print(driver.current_url)
 if total:
     with open('책리스트.csv', 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f, delimiter=',')
-        colList = '제목, 가격, 등수, 연도'.split(', ')
+        colList = '제목, 가격, 연도, 등수'.split(', ')
         writer.writerow(colList)
         for row in total:
             writer.writerow(row)
 else:
     print("데이터가 없습니다.")
 
-time.sleep(2)
+time.sleep(4)
+
+# CSV 파일을 Pandas DataFrame으로 읽기
+file_path = '책리스트.csv'
+df = pd.read_csv(file_path)
+
+# '가격' 컬럼을 숫자로 변환 (천 단위 쉼표 제거)
+df['가격'] = df['가격'].replace('[\$,]', '', regex=True).astype(float)
+
+# '가격대' 컬럼을 추가하여 가격대별로 그룹화
+bins = [0, 5000, 10000, 15000, 20000, 25000, 30000, float('inf')]  # 가격대 구간 설정
+labels = ['0-5000', '5000-10000', '10000-15000', '15000-20000', '20000-25000', '25000-30000', '30000+']
+df['가격대'] = pd.cut(df['가격'], bins=bins, labels=labels, right=False)
+
+# 가격대별 빈도를 막대 그래프로 시각화
+price_groups = df.groupby('가격대').size()
+
+# 그래프 설정
+plt.bar(price_groups.index, price_groups.values, color='skyblue')
+
+# 그래프에 추가 설명 넣기
+plt.title('가격대별 상품 수')  # 그래프 제목
+plt.xlabel('가격대')  # x축 레이블
+plt.ylabel('상품 수')  # y축 레이블
+
+# 가격대 별 권수 표시
+for i, v in enumerate(price_groups.values):
+    plt.text(i, v + 0.1, str(v), ha='center', va='bottom')
+
+# 총 권수 표시
+total_books = price_groups.sum()
+plt.text(len(price_groups) / 2, max(price_groups.values) + 1, f'총 권수: {total_books}', ha='center', va='bottom')
+
+# 그래프를 이미지로 저장
+image_stream = BytesIO()
+plt.savefig(image_stream, format='png')
+plt.close()
+
+# 엑셀 파일에 이미지 추가
+excel_writer = pd.ExcelWriter('output_file.xlsx', engine='openpyxl')
+df.to_excel(excel_writer, sheet_name='original_data', index=False)
+
+image_stream.seek(0)
+image_sheet = excel_writer.sheets['original_data']
+
+# 이미지 삽입
+img = openpyxl.drawing.image.Image(image_stream)
+img.width = 400  # 이미지의 가로 크기 조정
+img.height = 300  # 이미지의 세로 크기 조정
+image_sheet.add_image(img, 'K2')  # 이미지를 F2 셀에 삽입
+
+excel_writer._save()
+excel_writer.close()
+
+driver.quit()
+time.sleep(5)
+
+#옵션이 들어간 크롬을 driver라는 변수에 담아놓음
+driver = webdriver.Chrome(options=options)
+#네이버 사이트를 가져와서 driver에 담아놓았다.
+driver.get("https:/www.naver.com")
+#화면을 열고 10초간 기다리도록 한다.
+driver.implicitly_wait(5)
+
+driver.find_element(By.XPATH,'//*[@id="account"]/div/a').click()
+
+# =====> pyperclip 사용예제
+# # 클립보드로 텍스트 복사
+# pyperclip.copy("안녕하세요, Pyperclip!")
+
+# # 클립보드에서 텍스트 붙여넣기
+# text = pyperclip.paste()
+# print(text)  # 출력: 안녕하세요, Pyperc
+# lip
+
+#네이버 자동 로그인
+my_id = "dudah789"      #===========================이것도 일단 위에서 입력======================================
+my_pwd = "dladudah123!"  #===========================이것도 일단 위에서 입력======================================
+pyperclip.copy(my_id)
+driver.find_element(By.ID,'id').send_keys(Keys.CONTROL,'v')
+pyperclip.copy(my_pwd)
+driver.find_element(By.ID,'pw').send_keys(Keys.CONTROL,'v')
+driver.find_element(By.ID,'log.login').click()
+
+#메일 함 들어가는 작업
+driver.find_element(By.XPATH,'//*[@id="account"]/div[2]/div/div/ul/li[1]').click()
+driver.find_element(By.XPATH,'//*[@id="account"]/div[3]/div[2]/div[1]/a').click()
+print(driver.current_url)
+time.sleep(3)
+driver.switch_to.window(driver.window_handles[-1])  #새로 연 탭으로 이동    메일은 새로운 탭이 열리기에 탭 이동을 해준다
+print(driver.current_url)
+time.sleep(4)
+
+#일단 내게쓰기 한 후 엑셀 업로드 후 메일 보내기
+driver.find_element(By.XPATH,'//*[@id="root"]/div/nav/div/div[1]/div[2]/a[2]').click()
+time.sleep(1)
+#driver.find_element(By.CLASS_NAME,'button_upload').click()
+
+
+# 엑셀 파일 경로
+excel_file_path =  r'D:\zeromo\workspace\pythonws\output_file.xlsx'
+# 파일 업로드
+file_input = driver.find_element(By.ID, 'ATTACH_LOCAL_FILE_ELEMENT_ID')
+file_input.send_keys(os.path.abspath(excel_file_path))
+
+# 첨부한 파일이 업로드될 때까지 대기
+wait = WebDriverWait(driver, 10)
+wait.until(EC.invisibility_of_element_located((By.CLASS_NAME, 'file_upload_progress')))
+
+driver.find_element(By.CLASS_NAME,'button_write_task').click()
+
+
+input()
 
 
 
