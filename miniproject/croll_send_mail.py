@@ -34,7 +34,9 @@ print("===반복 전===",last_height)
 
 
 #원하는 개수만큼 데이터 추출
-read_num = 200
+read_num = 220          #=====================원래는 밑에서 지정하지만 편의상 여기서 지정===============================     
+my_id = "dudah789"     #=====================원래는 밑에서 지정하지만 편의상 여기서 지정===============================     
+my_pwd = "dladudah123!"    #=====================원래는 밑에서 지정하지만 편의상 여기서 지정===============================     
 #스크롤의 전체 높이가 내린 후의 높이와 같을 때 까지 계속 내리기
 while True :
     #스크롤 끝까지 내리기
@@ -111,8 +113,8 @@ for i in range(1,read_num//40+2) :
         total.append(list_obj)
         if index >= len(titles) - 1 :  # 더이상 얻어올 데이터가 없으면 계속 반복을 진행하고
             continue
-    if len(total) >= read_num : # 총 자료가 원하는개수인 read_num개가 된다면 반복을 그만한다
-         break
+        if len(total) >= read_num : # 총 자료가 원하는개수인 read_num개가 된다면 반복을 그만한다
+            break
         
 print("실행되는가")
 print(len(total))
@@ -125,8 +127,8 @@ print(driver.current_url)
 if total:
     with open('책리스트.csv', 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f, delimiter=',')
-        colList = '제목, 가격, 연도, 등수'.split(', ')
-        writer.writerow(colList)
+        # colList = '제목, 가격, 연도, 등수'.split(', ')
+        # writer.writerow(colList)
         for row in total:
             writer.writerow(row)
 else:
@@ -154,8 +156,8 @@ driver.find_element(By.XPATH,'//*[@id="account"]/div/a').click()
 # lip
 
 #네이버 자동 로그인
-my_id = "본인 아이디"
-my_pwd = "본인 비밀번호!"
+# my_id = "본인 아이디"      #===========================이것도 일단 위에서 입력======================================
+# my_pwd = "본인 비밀번호!"  #===========================이것도 일단 위에서 입력======================================
 pyperclip.copy(my_id)
 driver.find_element(By.ID,'id').send_keys(Keys.CONTROL,'v')
 pyperclip.copy(my_pwd)

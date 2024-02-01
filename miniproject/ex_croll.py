@@ -33,7 +33,7 @@ print("===반복 전===",last_height)
 
 
 #원하는 개수만큼 데이터 추출
-read_num = 160
+read_num = 300
 #스크롤의 전체 높이가 내린 후의 높이와 같을 때 까지 계속 내리기
 while True :
     #스크롤 끝까지 내리기
@@ -94,7 +94,7 @@ for i in range(1,read_num//40+2) :
         last_height = new_height
 
     titles = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[1]/span')
-    prices = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/div/div[1]/span')
+    prices = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/div/div/span/em')
     grades = driver.find_elements(By.CSS_SELECTOR, '.bookListItem_feature__txTlp')
     dates = driver.find_elements(By.CLASS_NAME,'bookListItem_detail__RBQ6x .bookListItem_detail_date___byvG')
 
@@ -124,8 +124,8 @@ print(driver.current_url)
 if total:
     with open('책리스트.csv', 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f, delimiter=',')
-        # colList = '제목, 가격, 연도, 등수'.split(', ')
-        # writer.writerow(colList)
+        colList = '제목, 가격, 연도, 등수'.split(', ')
+        writer.writerow(colList)
         for row in total:
             writer.writerow(row)
 else:

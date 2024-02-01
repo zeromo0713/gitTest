@@ -33,7 +33,7 @@ print("===반복 전===",last_height)
 
 
 #원하는 개수만큼 데이터 추출
-read_num = 160
+read_num = 100
 #스크롤의 전체 높이가 내린 후의 높이와 같을 때 까지 계속 내리기
 while True :
     #스크롤 끝까지 내리기
@@ -93,28 +93,45 @@ for i in range(1,read_num//40+2) :
         #스크롤 내린 후 페이지 높이를 현재 페이지 높이 변수에 저장
         last_height = new_height
 
-    titles = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[1]/span')
-    prices = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/div/div[1]/span')
-    grades = driver.find_elements(By.CSS_SELECTOR, '.bookListItem_feature__txTlp')
-    dates = driver.find_elements(By.CLASS_NAME,'bookListItem_detail__RBQ6x .bookListItem_detail_date___byvG')
+    list_all = driver.find_elements(By.CLASS_NAME,'list_book .bookListItem_item_book__1yCey')
+    print(type(list_all))
+    # titles = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[1]/span')
+    # prices = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/div/div[1]/span')
+    # grades = driver.find_elements(By.CLASS_NAME,'bookListItem_feature__txTlp')
+    # #grades = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[2]') #등수가 없는 경우 다른 것을 잡아버린다
+    # dates = driver.find_elements(By.CLASS_NAME,'bookListItem_detail__RBQ6x .bookListItem_detail_date___byvG')
 
-
-   
-    for index,(title, price, grade, date_element) in enumerate(zip(titles, prices, grades, dates)):
-        list_obj = []
-        list_obj.append(title.text)
-        list_obj.append(price.text)
-        list_obj.append(grade.text)
-        list_obj.append(date_element.text)
-        print(list_obj,"===================")
-        total.append(list_obj)
-        if index >= len(titles) - 1 :  # 더이상 얻어올 데이터가 없으면 계속 반복을 진행하고
+    # for index,(title, price, grade, date_element) in enumerate(zip(titles, prices, grades, dates)):
+    #     list_obj = []
+    #     list_obj.append(title.text)
+    #     list_obj.append(price.text)
+    #     list_obj.append(grade.text)
+    #     list_obj.append(date_element.text)
+    #     print(list_obj,"===================")
+    #     total.append(list_obj)
+    #     if index >= len(titles) - 1 :  # 더이상 얻어올 데이터가 없으면 계속 반복을 진행하고
+    #         continue
+    #     if len(total) >= read_num : # 총 자료가 원하는개수인 read_num개가 된다면 반복을 그만한다
+    #         break
+    list_obj = []
+    for index,list in enumerate(list_all):
+        #list_obj = []
+        print(list.text)
+        print("==========================구분선=====================")
+        print(type(list.text))
+        sep_list= list.text.split('\n')
+        print(type(sep_list))
+        list_obj.append(sep_list)
+        print(type(list_obj))
+        total.append(sep_list)
+        print(type(total))
+        if index >= len(list_all) - 1 :  # 더이상 얻어올 데이터가 없으면 계속 반복을 진행하고
             continue
-    if len(total) >= read_num : # 총 자료가 원하는개수인 read_num개가 된다면 반복을 그만한다
-        break
-        
+        if len(total) >= read_num : # 총 자료가 원하는개수인 read_num개가 된다면 반복을 그만한다
+            break
 print("실행되는가")
 print(len(total))
+print(total[3])
 print(driver.current_url)
 
     
@@ -134,7 +151,6 @@ else:
 
 
 input()
-
 
 
 
