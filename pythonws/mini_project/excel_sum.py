@@ -8,7 +8,7 @@ import os
 folder_path = r'D:\zeromo\workspace\pythonws'
 
 # 결과를 저장할 엑셀 파일 이름
-output_excel_name = '결과파일.xlsx'
+output_excel_name = '통합파일.xlsx'
 
 # 폴더 내 모든 파일에 대해 반복
 with pd.ExcelWriter(output_excel_name, engine='xlsxwriter') as writer:
@@ -29,3 +29,5 @@ with pd.ExcelWriter(output_excel_name, engine='xlsxwriter') as writer:
                 # 시트의 이름을 현재 파일의 이름과 결합하여 저장
                 sheet_output_name = f"{file_name}_{sheet_name}"
                 current_sheet_df.to_excel(writer, sheet_name=sheet_output_name, index=False)
+
+                
