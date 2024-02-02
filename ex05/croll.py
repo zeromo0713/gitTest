@@ -36,9 +36,9 @@ print("===반복 전===",last_height)
 # =========================================카테고리 목록 --> categori에 원하는 번호 입력===========================================================
 # 1.소설, 2.시/에세이, 3.경제/경영, 4자기계발, 5.인문. 6.역사, 7.사회/정치, 8.자연/과학, 9.예술/대중문화, 10.종교, 11.유아, 12.어린이, 13.가정/요리 ,14.여행, 15.국어/외국어, 16.컴퓨터/IT, 17.청소년, 18.수험서/자격증, 19.만화
 # ,20.잡지 , 21.외국도서 ,22.건강/취미, 23.고등학교 참고서, 24.중학교 참고서, 25.초등학교 참고서 , 26.중고도서]
-categori = 11
+categori = 16
 #원하는 개수만큼 데이터 추출
-read_num = 30
+read_num = 100
 #스크롤 내리는 것을 함수로 정의
 def scroll_down_to_bottom():
     #스크롤 하기 전 높이 구하기
@@ -98,61 +98,38 @@ for i in range(1,read_num//40+2) :
     time.sleep(2)
     scroll_down_to_bottom()
 
-    
-    list_all = driver.find_elements(By.CLASS_NAME,'list_book .bookListItem_item_book__1yCey')
-    print("titles의 타입 ========>",type(list_all)) 
-    for list in enumerate(list_all) :
-        
-        
-        title = driver.find_element(By.CLASS_NAME,'bookListItem_title__X7f9_')
-        print(title.text)
-        # price = driver.find_element(By.CSS_SELECTOR,'.list_book .bookListItem_item_book__1yCey > div > div > div:nth-child(1) > span')
-        # print(price.text)
-        # ebook_price = driver.find_element(By.CSS_SELECTOR,'.list_book .bookListItem_item_book__1yCey > div > div > div:nth-child(2) > span')
-        # print(ebook_price.text)
-        # audio_price = driver.find_element(By.CSS_SELECTOR,'.list_book .bookListItem_item_book__1yCey > div > div > div:nth-child(3) > span')
-        # print(audio_price.text)
-        # rank = driver.find_element(By.CSS_SELECTOR, '.bookListItem_feature__txTlp')
-        # print(rank.text)
-        # date = driver.find_element(By.CLASS_NAME,'bookListItem_detail__RBQ6x .bookListItem_detail_date___byvG')
-        # print(date.text)
-        # list_book = []
-        # list_book.append(title.text)
-        # list_book.append(price.text)
-        # list_book.append(rank.text)
-        # list_book.append(date.text)
-        
- 
-        # print("list_book 타입 ==========>",type(list_book))
-        # print(list_book)
-        # total.append(list_book)
-        # print("total 타입 ==========>",type(total))
+    titles = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/a[1]/div[2]/div[1]/span')
+    prices = driver.find_elements(By.XPATH,'//*[@id="book_list"]/ul/li/div/div/div/span/em')
+    grades = driver.find_elements(By.CSS_SELECTOR, '.bookListItem_feature__txTlp')
+    dates = driver.find_elements(By.CLASS_NAME,'bookListItem_detail__RBQ6x .bookListItem_detail_date___byvG')
 
 
-    # for index,(title, price, grade, date_element) in enumerate(zip(titles, prices, grades, dates)):
-    #     list_obj = []
-    #     list_obj.append(title.text)
-    #     list_obj.append(price.text)
-    #     list_obj.append(grade.text)
-    #     list_obj.append(date_element.text)
-    #     print(list_obj,"===================")
-    #     total.append(list_obj)
-    #     if index >= len(titles) - 1 :  # 더이상 얻어올 데이터가 없으면 계속 반복을 진행하고
-    #         continue
+   
+    for index,(title, price, grade, date_element) in enumerate(zip(titles, prices, grades, dates)):
+        list_obj = []
+        list_obj.append(title.text)
+        list_obj.append(price.text)
+        list_obj.append(grade.text)
+        list_obj.append(date_element.text)
+        print(list_obj,"===================")
+        total.append(list_obj)
+        if index >= len(titles) - 1 :  # 더이상 얻어올 데이터가 없으면 계속 반복을 진행하고
+            continue
         if len(total) >= read_num : # 총 자료가 원하는개수인 read_num개가 된다면 반복을 그만한다
             break
         
 print("실행되는가")
-print(type(total))
 print(len(total))
 print(driver.current_url)
-  
+
+    
+       
 
 # 파일에 쓰기(csv파일에 저장)
 if total:
-    with open('책리스트.csv', 'w', encoding='utf-8-sig', newline='') as f:
+    with open('책리스트{}.csv'.format(categori), 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f, delimiter=',')
-        colList = '제목, 가격, 등수, 연도, 컬럼1'.split(', ')
+        colList = '제목, 가격, 등수, 연도'.split(', ')
         writer.writerow(colList)
         for row in total:
             writer.writerow(row)
