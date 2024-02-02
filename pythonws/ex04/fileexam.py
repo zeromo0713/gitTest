@@ -1,6 +1,6 @@
 import csv
 
-f = open("C:\\Users\\임영모\\OneDrive\\바탕 화면\\텍스트.txt", 'r',encoding='UTF8')
+f = open("C:\\Users\\user\\Desktop\\텍스트.txt", 'r',encoding='UTF8')
 # ff = f.readline()
 # fff = ff.split()
 # print(fff)
@@ -27,13 +27,6 @@ thirdline.append(totalline[2])   # 리스트 하나로 묶어버리기
 print(type(firstline),"&*&*",firstline)
 print(type(secondline),"&*&*",secondline)
 print(type(thirdline),"&*&*",thirdline)
-
-aa = ['일등','이등','삼등','사등','오등','이건','리스트']
-print("======================================")
-print(type(aa), aa)
-print(aa[1])
-print(firstline[0])
-
 
 # firstline[0].splitd
 

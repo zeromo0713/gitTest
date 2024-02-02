@@ -30,7 +30,7 @@ driver.implicitly_wait(10)
 elem = driver.find_element(By.XPATH,'//*[@id="m_42"]/span[1]')
 actions = webdriver.ActionChains(driver).click(elem)
 actions.perform()
-time.sleep(2)
+
 #강원을 클릭한 후 강원도 평균과 전국 평균을 출력하여준다
 gangwonPriceAvg = driver.find_element(By.XPATH,'//*[@id="sido_price1"]/span[1]').text
 totalPriceAvg = driver.find_element(By.XPATH,'//*[@id="oilcon1"]/div/dl[1]/dd/span[1]').text
@@ -57,18 +57,18 @@ gasStationtexts = gasStationList.find_elements(By.XPATH,'./tr/td/a')
 
 
 
-workbook = openpyxl.load_workbook(r'C:\Users\임영모\OneDrive\바탕 화면\영모\엑셀\통합 문서1.xlsx')
+workbook = openpyxl.load_workbook('C:\\Users\\user\\Desktop\\새 폴더\\통합 문서1.xlsx')
 sheet = workbook['Sheet1']
 sheet['B1'] = totalPriceAvg
 sheet['B2'] = gangwonPriceAvg
-workbook.save(r'C:\Users\임영모\OneDrive\바탕 화면\영모\엑셀\통합 문서1.xlsx')
+workbook.save('C:\\Users\\user\\Desktop\\새 폴더\\통합 문서1.xlsx')
 
 i=1
 for stationName in gasStationtexts:
     print(stationName.text)
     sheet['D'+str(i)] = stationName.text
     i=i+1
-workbook.save(r'C:\Users\임영모\OneDrive\바탕 화면\영모\엑셀\통합 문서1.xlsx')
+workbook.save('C:\\Users\\user\\Desktop\\새 폴더\\통합 문서1.xlsx')
 
 
 #하나를 눌러서 지도를 나오도록 한다
@@ -107,6 +107,6 @@ for station in stationList:
 #     i=i+1
 
     
-workbook.save(r'C:\Users\임영모\OneDrive\바탕 화면\영모\엑셀\통합 문서1.xlsx')
+workbook.save('C:\\Users\\user\\Desktop\\새 폴더\\통합 문서1.xlsx')
 
 input()

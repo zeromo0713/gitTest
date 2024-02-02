@@ -14,6 +14,7 @@ writer.writerow(title_list)   # 반드시 list 타입이 들어가야 함
 writer.writerow(dan_list) 
 
 
+
 for i in range(1,200//50+1) :   # 정수 부분까지 몫을 구분하고자 할 때는 나누기 //을 2개 사용
     url=f"https://finance.naver.com/sise/sise_market_sum.naver?&page={i}" 
     # url="https://finance.naver.com/sise/sise_market_sum.naver?&page="+str(i)  # ========>이 방법도 있고

@@ -36,9 +36,9 @@ title = driver.find_element(By.XPATH,'//*[@id="__next"]/main/div/div[3]/section/
 print('&*&*&*&*&*',title.text)
 
 movie_list = []
-elems = driver.find_elements(By.CSS_SELECTOR,'.ipc-title__text.ipc-title__text')
-for elem in elems :
-    movie_list.append(elem.text)
+titles = driver.find_elements(By.CSS_SELECTOR,'.ipc-title__text.ipc-title__text')
+for title in titles :
+    movie_list.append(title.text)
 
 print("===============",movie_list)
 print("===============길이 : ",len(movie_list))

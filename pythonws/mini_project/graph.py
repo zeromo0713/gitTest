@@ -2,12 +2,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from io import BytesIO
 import openpyxl
-import time
+plt.rcParams['font.family'] ='Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] =False
 
-plt.rcParams['font.family'] = 'Malgun Gothic'
-plt.rcParams['axes.unicode_minus'] = False
 
-categori = 6
+categori = 5
 
 # CSV 파일을 Pandas DataFrame으로 읽기
 file_path = '책리스트{}.csv'.format(categori)
@@ -45,23 +44,24 @@ image_stream = BytesIO()
 plt.savefig(image_stream, format='png')
 plt.close()
 
-time.sleep(2)
-
 # BytesIO에서 파일로 저장
-image_path = '이미지파일{}.png'.format(categori)
-with open(image_path, 'wb') as img_file:
+file_path = r'D:\zeromo\workspace\pythonws\이미지파일{}.png'.format(categori)  # 원하는 경로로 수정
+with open(file_path, 'wb') as img_file:
     img_file.write(image_stream.read())
 
-# 엑셀 파일에 데이터와 이미지 추가
+
+# 엑셀 파일에 이미지 추가
 excel_writer = pd.ExcelWriter('output_file{}.xlsx'.format(categori), engine='openpyxl')
 df.to_excel(excel_writer, sheet_name='original_data', index=False)
 
-# 이미지 삽입
+image_stream.seek(0)
 image_sheet = excel_writer.sheets['original_data']
-img = openpyxl.drawing.image.Image(image_path)
+
+# 이미지 삽입
+img = openpyxl.drawing.image.Image(image_stream)
 img.width = 400  # 이미지의 가로 크기 조정
 img.height = 300  # 이미지의 세로 크기 조정
-image_sheet.add_image(img, 'K2')  # 이미지를 K2 셀에 삽입
+image_sheet.add_image(img, 'K2')  # 이미지를 F2 셀에 삽입
 
 excel_writer._save()
 excel_writer.close()

@@ -7,7 +7,6 @@ print( " 3! => ", fact(3))
 print( " 4! => ", fact(4))
 print( " 5! => ", fact(5))
 print( " 6! => ", fact(6))
-print(fact(20))
 
 
 #재귀호출 === 자기가 자기를 부르는 것
