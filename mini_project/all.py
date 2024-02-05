@@ -143,7 +143,7 @@ print(driver.current_url)
 if total:
     with open('책리스트{}.csv'.format(categori), 'w', encoding='utf-8-sig', newline='') as f:
         writer = csv.writer(f, delimiter=',')
-        colList = '제목, 가격, 등수, 연도'.split(', ')
+        colList = '제목, 저자, 그림, 출판, 가격, e-book가격, 오디오북가격, 순위, 날짜, 평점'.split(', ')
         writer.writerow(colList)
         for row in total:
             writer.writerow(row)
